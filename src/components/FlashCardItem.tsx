@@ -30,8 +30,12 @@ const FlashCardItem = ({ card }: FlashCardItemProps) => {
       >
         {/* Front */}
         <div
-          className="backface-hidden absolute inset-0 rounded-xl border border-border bg-card p-6 flex flex-col justify-between"
-          style={{ boxShadow: "var(--shadow-card)" }}
+          className="backface-hidden absolute inset-0 rounded-xl border border-border bg-card p-6 flex flex-col justify-between transition-[visibility,opacity] duration-200"
+          style={{
+            boxShadow: "var(--shadow-card)",
+            visibility: flipped ? "hidden" : "visible",
+            opacity: flipped ? 0 : 1,
+          }}
         >
           <p className="text-foreground font-semibold text-lg leading-relaxed">{card.frente}</p>
           <div className="flex items-center justify-between mt-4">
@@ -49,8 +53,12 @@ const FlashCardItem = ({ card }: FlashCardItemProps) => {
 
         {/* Back */}
         <div
-          className="backface-hidden rotate-y-180 absolute inset-0 rounded-xl border border-accent bg-primary p-6 flex flex-col justify-between"
-          style={{ boxShadow: "var(--shadow-elevated)" }}
+          className="backface-hidden rotate-y-180 absolute inset-0 rounded-xl border border-accent bg-primary p-6 flex flex-col justify-between transition-[visibility,opacity] duration-200"
+          style={{
+            boxShadow: "var(--shadow-elevated)",
+            visibility: flipped ? "visible" : "hidden",
+            opacity: flipped ? 1 : 0,
+          }}
         >
           <div>
             <p className="text-primary-foreground font-semibold text-lg leading-relaxed">{card.verso}</p>

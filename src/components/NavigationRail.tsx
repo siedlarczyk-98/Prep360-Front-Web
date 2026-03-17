@@ -35,7 +35,7 @@ const NavigationRail = () => {
   };
 
   return (
-    <header className="h-11 min-h-[44px] max-h-[44px] bg-primary flex items-center px-3 gap-2.5 shrink-0" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+    <header className="h-auto min-h-[44px] bg-primary flex items-center px-3 gap-2.5 shrink-0" style={{ paddingTop: "env(safe-area-inset-top)" }}>
       {/* Hamburger */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
