@@ -104,6 +104,7 @@ const StudyMode = ({ cards: initialCards, email, onClose }: StudyModeProps) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 bg-primary flex flex-col h-full overflow-hidden"
+      style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-1.5 flex-shrink-0">
