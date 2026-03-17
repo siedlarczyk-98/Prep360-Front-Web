@@ -108,7 +108,7 @@ const StudyMode = ({ cards: initialCards, email, onClose }: StudyModeProps) => {
     >
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-1.5 flex-shrink-0">
-        <button onClick={onClose} className="text-primary-foreground/70 hover:text-primary-foreground">
+        <button onClick={onClose} className="text-primary-foreground/70 active:text-primary-foreground">
           <X className="w-4 h-4" />
         </button>
         {!completed && (

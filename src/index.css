@@ -101,6 +101,19 @@
     font-family: 'Inter', sans-serif;
     -webkit-user-select: none;
     user-select: none;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Replace hover with active states on touch devices */
+  @media (hover: none) {
+    button:hover, a:hover, [role="button"]:hover {
+      all: unset;
+    }
+  }
+  button:active, a:active, [role="button"]:active {
+    opacity: 0.75;
+    transition: opacity 0.1s ease;
   }
   /* Allow text selection in inputs and textareas */
   input, textarea, [contenteditable="true"] {
