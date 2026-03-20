@@ -12,6 +12,7 @@ interface StudyModeProps {
   cards: FlashCard[];
   email: string;
   onClose: () => void;
+  isManualMode?: boolean;
 }
 
 function formatNextReview(dateStr: string): string {
@@ -44,7 +45,7 @@ const difficultyConfig: { value: Difficulty; label: string; color: string }[] = 
   { value: "easy", label: "Fácil", color: "bg-[hsl(var(--success))] hover:bg-[hsl(var(--success)/0.85)] text-white" },
 ];
 
-const StudyMode = ({ cards: initialCards, email, onClose }: StudyModeProps) => {
+const StudyMode = ({ cards: initialCards, email, onClose, isManualMode = false }: StudyModeProps) => {
   const [queue, setQueue] = useState<FlashCard[]>(() => [...initialCards]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -58,13 +59,15 @@ const StudyMode = ({ cards: initialCards, email, onClose }: StudyModeProps) => {
   const handleAnswer = async (difficulty: Difficulty) => {
     if (submitting) return;
     setSubmitting(true);
-    try {
-      const result = await registerStudy(email, card.id, difficulty);
-      if (result?.proximaRevisao) {
-        toast.success("Resposta registrada!", { description: `Próxima revisão: ${formatNextReview(result.proximaRevisao)}` });
+    if (!isManualMode) {
+      try {
+        const result = await registerStudy(email, card.id, difficulty);
+        if (result?.proximaRevisao) {
+          toast.success("Resposta registrada!", { description: `Próxima revisão: ${formatNextReview(result.proximaRevisao)}` });
+        }
+      } catch {
+        toast.error("Erro ao registrar resposta", { description: "Tente novamente." });
       }
-    } catch {
-      toast.error("Erro ao registrar resposta", { description: "Tente novamente." });
     }
     setStats((s) => ({ ...s, [difficulty]: s[difficulty] + 1 }));
     setSubmitting(false);

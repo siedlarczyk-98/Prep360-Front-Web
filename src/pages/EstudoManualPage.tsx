@@ -48,6 +48,7 @@ const EstudoManualPage = () => {
     <StudyMode
       cards={cards}
       email={email}
+      isManualMode
       onClose={() => {
         queryClient.invalidateQueries({ queryKey: ["cards-today", email] });
         queryClient.invalidateQueries({ queryKey: ["cards-new", email] });
