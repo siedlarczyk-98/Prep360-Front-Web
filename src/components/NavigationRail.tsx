@@ -17,6 +17,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/dashboard": "Flashcards",
   "/agenda": "Agenda de Estudos",
   "/simulado-filtros": "Treino com Questões",
+  "/dashboard/metricas": "Métricas",
   "/como-funciona": "Como Funciona",
 };
 
