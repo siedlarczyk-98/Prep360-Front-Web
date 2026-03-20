@@ -58,7 +58,7 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
 
   const { data: progressoDisciplinas = [] } = useQuery({
     queryKey: ["progresso-disciplinas", email],
-    queryFn: () => fetchProgressoDisciplinas(email)
+    queryFn: () => fetchProgressoDisciplinas()
   });
 
   const isLoading = isLoadingToday || isLoadingNew || isLoadingAll;
