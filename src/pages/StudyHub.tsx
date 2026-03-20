@@ -18,7 +18,7 @@ const StudyHub = () => {
 
   const { data: questoes, isLoading: loadingQuestoes } = useQuery({
     queryKey: ["questoes", email],
-    queryFn: () => fetchQuestoes({ email, apenas_liberadas: true }),
+    queryFn: () => fetchQuestoes({ apenas_liberadas: true }),
     enabled: !!email,
   });
 
