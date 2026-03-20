@@ -45,7 +45,7 @@ const difficultyConfig: { value: Difficulty; label: string; color: string }[] = 
   { value: "easy", label: "Fácil", color: "bg-[hsl(var(--success))] hover:bg-[hsl(var(--success)/0.85)] text-white" },
 ];
 
-const StudyMode = ({ cards: initialCards, email, onClose }: StudyModeProps) => {
+const StudyMode = ({ cards: initialCards, email, onClose, isManualMode = false }: StudyModeProps) => {
   const [queue, setQueue] = useState<FlashCard[]>(() => [...initialCards]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
