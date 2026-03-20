@@ -320,7 +320,7 @@ const MetricasPage = () => {
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${area.percentual}%` }}
-                      transition={{ duration: 0.6, delay: 0.1 + i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{ duration: 0.6, delay: 0.1 + i * 0.05, ease: [0.16, 1, 0.3, 1] as const }}
                       className={`h-full rounded-full ${barColor(area.percentual)}`}
                     />
                   </div>
