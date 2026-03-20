@@ -12,6 +12,7 @@ interface StudyModeProps {
   cards: FlashCard[];
   email: string;
   onClose: () => void;
+  isManualMode?: boolean;
 }
 
 function formatNextReview(dateStr: string): string {
