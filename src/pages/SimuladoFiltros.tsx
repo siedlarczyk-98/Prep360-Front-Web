@@ -7,10 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { fetchAulasComQuestoes } from "@/lib/api";
+import { fetchAulasComQuestoes, fetchInstituicoes } from "@/lib/api";
 import logoIsotipo from "@/assets/logo-isotipo.png";
-
-const BASE_URL = "https://prep360.up.railway.app/api";
 
 type Modo = "pos-aula" | "grande-area" | "simulado-real";
 
@@ -41,12 +39,8 @@ const SimuladoFiltros = () => {
   });
 
   const { data: instituicoes = [], isLoading: isLoadingInst } = useQuery({
-    queryKey: ["instituicoes"],
-    queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/questoes/instituicoes`);
-      if (!res.ok) return [];
-      return res.json() as Promise<string[]>;
-    },
+    queryKey: ["instituicoes", email],
+    queryFn: fetchInstituicoes,
     enabled: modo === "simulado-real"
   });
 
