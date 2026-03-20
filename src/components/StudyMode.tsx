@@ -59,13 +59,15 @@ const StudyMode = ({ cards: initialCards, email, onClose, isManualMode = false }
   const handleAnswer = async (difficulty: Difficulty) => {
     if (submitting) return;
     setSubmitting(true);
-    try {
-      const result = await registerStudy(email, card.id, difficulty);
-      if (result?.proximaRevisao) {
-        toast.success("Resposta registrada!", { description: `Próxima revisão: ${formatNextReview(result.proximaRevisao)}` });
+    if (!isManualMode) {
+      try {
+        const result = await registerStudy(email, card.id, difficulty);
+        if (result?.proximaRevisao) {
+          toast.success("Resposta registrada!", { description: `Próxima revisão: ${formatNextReview(result.proximaRevisao)}` });
+        }
+      } catch {
+        toast.error("Erro ao registrar resposta", { description: "Tente novamente." });
       }
-    } catch {
-      toast.error("Erro ao registrar resposta", { description: "Tente novamente." });
     }
     setStats((s) => ({ ...s, [difficulty]: s[difficulty] + 1 }));
     setSubmitting(false);
