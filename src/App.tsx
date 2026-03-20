@@ -13,6 +13,7 @@ import Agenda from "./pages/Agenda.tsx";
 import SimuladoView from "./pages/SimuladoView.tsx";
 import SimuladoFiltros from "./pages/SimuladoFiltros.tsx";
 import EstudoManualPage from "./pages/EstudoManualPage.tsx";
+import MetricasPage from "./pages/MetricasPage.tsx";
 import AppLayout from "./components/AppLayout.tsx";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/agenda" element={<Agenda />} />
             <Route path="/simulado-filtros" element={<SimuladoFiltros />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/dashboard/metricas" element={<MetricasPage />} />
             <Route path="/como-funciona" element={<ComoFunciona />} />
           </Route>
 
