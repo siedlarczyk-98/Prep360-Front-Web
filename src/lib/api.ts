@@ -280,6 +280,14 @@ export async function fetchRaioXQuestao(questaoId: number, email: string): Promi
 
 // --- 5. MÉTRICAS ---
 
+export interface AtividadeDiariaRaw {
+  dia: string;
+  flashcards: number;
+  questoes: number;
+  aulas: number;
+  volume: number;
+}
+
 export interface AtividadeDiaria {
   data: string;
   flashcards: number;
@@ -288,9 +296,23 @@ export interface AtividadeDiaria {
 }
 
 export async function fetchAtividadeDiaria(email: string): Promise<AtividadeDiaria[]> {
-  const res = await fetch(`${BASE_URL}/stats/atividade-diaria?email=${getSafeEmail(email)}`);
-  if (!res.ok) return [];
-  return res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/stats/atividade-diaria?email=${getSafeEmail(email)}`, { headers: JSON_HEADERS });
+    if (!res.ok) {
+      console.error(`[fetchAtividadeDiaria] HTTP ${res.status}: ${res.statusText}`);
+      return [];
+    }
+    const raw: AtividadeDiariaRaw[] = await res.json();
+    return raw.map((r) => ({
+      data: r.dia.split("T")[0],
+      flashcards: r.flashcards,
+      questoes: r.questoes,
+      aulas: r.aulas,
+    }));
+  } catch (err) {
+    console.error("[fetchAtividadeDiaria] Network error:", err);
+    throw err;
+  }
 }
 
 export interface DesempenhoArea {
@@ -301,9 +323,17 @@ export interface DesempenhoArea {
 }
 
 export async function fetchDesempenhoQuestoes(email: string, tentativa: "primeira" | "ultima"): Promise<DesempenhoArea[]> {
-  const res = await fetch(`${BASE_URL}/stats/desempenho-questoes?email=${getSafeEmail(email)}&tentativa=${tentativa}`);
-  if (!res.ok) return [];
-  return res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/stats/desempenho-questoes?email=${getSafeEmail(email)}&tentativa=${tentativa}`, { headers: JSON_HEADERS });
+    if (!res.ok) {
+      console.error(`[fetchDesempenhoQuestoes] HTTP ${res.status}: ${res.statusText}`);
+      return [];
+    }
+    return res.json();
+  } catch (err) {
+    console.error("[fetchDesempenhoQuestoes] Network error:", err);
+    throw err;
+  }
 }
 
 // --- 6. INTEGRAÇÃO ANKI ---
