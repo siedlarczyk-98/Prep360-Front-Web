@@ -12,7 +12,7 @@ const StudyHub = () => {
 
   const { data: cardsHoje, isLoading: loadingCards } = useQuery({
     queryKey: ["cards-hoje", email],
-    queryFn: () => fetchCardsForToday(email),
+    queryFn: () => fetchCardsForToday(),
     enabled: !!email,
   });
 
