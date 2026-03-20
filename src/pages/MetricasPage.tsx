@@ -110,7 +110,8 @@ const MetricasPage = () => {
   if (!email) return null;
 
   /* ───── entrance anim ───── */
-  const stagger = { hidden: { opacity: 0, y: 16, filter: "blur(4px)" }, show: (i: number) => ({ opacity: 1, y: 0, filter: "blur(0px)", transition: { delay: i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] } }) };
+  const ease = [0.16, 1, 0.3, 1] as const;
+  const stagger = { hidden: { opacity: 0, y: 16, filter: "blur(4px)" }, show: (i: number) => ({ opacity: 1, y: 0, filter: "blur(0px)", transition: { delay: i * 0.08, duration: 0.5, ease } }) };
 
   return (
     <div className="min-h-screen bg-background">
