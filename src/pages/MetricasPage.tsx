@@ -270,3 +270,43 @@ const MetricasPage = () => {
           </motion.div>
 
           {loading || loadingDesempenho ? (
+            <Skeleton className="h-44 rounded-xl" />
+          ) : (
+            <motion.div variants={stagger} custom={10} initial="hidden" animate="show" className="bg-card rounded-xl p-4 shadow-sm space-y-3">
+              {desempenho.length === 0 ? (
+                <p className="text-sm text-muted-foreground">Sem dados de desempenho para exibir.</p>
+              ) : (
+                desempenho.map((area) => {
+                  const comparativoArea = comparativo?.resultado.find((c) => c.grande_area === area.grande_area);
+                  const percentualComparativo = comparativoArea?.percentual_grupo ?? null;
+
+                  return (
+                    <div key={area.grande_area} className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-foreground font-medium truncate pr-2">{area.grande_area}</span>
+                        <span className="text-muted-foreground tabular-nums">{Math.round(area.percentual)}%</span>
+                      </div>
+
+                      <div className="h-2.5 w-full rounded-full bg-muted overflow-hidden">
+                        <div className={`h-full ${barColor(area.percentual)}`} style={{ width: `${Math.max(4, Math.min(area.percentual, 100))}%` }} />
+                      </div>
+
+                      {percentualComparativo !== null && (
+                        <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                          <span>Média do grupo</span>
+                          <span className="tabular-nums">{Math.round(percentualComparativo)}%</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </motion.div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+};
+
+export default MetricasPage;
