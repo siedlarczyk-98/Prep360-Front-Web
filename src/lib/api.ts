@@ -12,9 +12,9 @@ const BASE_URL = "https://prep360.up.railway.app/api";
 export async function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
   const token = localStorage.getItem("userToken");
   const headers: Record<string, string> = {
-    "Accept": "application/json",
+    Accept: "application/json",
     "Content-Type": "application/json",
-    ...(options.headers as Record<string, string> || {}),
+    ...((options.headers as Record<string, string>) || {}),
   };
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -403,5 +403,26 @@ export async function syncWithAnki(cards: FlashCard[]) {
     return { success: true, count: cards.length };
   } catch {
     throw new Error("ANKI_NOT_CONNECTED");
+  }
+}
+
+// --- 7. ONBOARDING WEB ---
+
+export async function fetchOnboardingWeb(): Promise<boolean> {
+  try {
+    const res = await authFetch(`${BASE_URL}/perfil`);
+    if (!res.ok) return false;
+    const data = await res.json();
+    return data.onboarding_web ?? false;
+  } catch {
+    return false;
+  }
+}
+
+export async function marcarOnboardingWeb(): Promise<void> {
+  try {
+    await authFetch(`${BASE_URL}/perfil/onboarding-web`, { method: "PATCH" });
+  } catch {
+    console.error("Erro ao marcar onboarding web");
   }
 }
