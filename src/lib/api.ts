@@ -373,6 +373,33 @@ export async function fetchDesempenhoQuestoes(tentativa: "primeira" | "ultima"):
   }
 }
 
+export interface DesempenhoComparativo {
+  grande_area: string;
+  total: number;
+  corretas: number;
+  percentual: number;
+  percentual_grupo: number | null;
+  grupo: string;
+}
+
+export interface ResultadoComparativo {
+  resultado: DesempenhoComparativo[];
+  grupo: "interesse" | "geral";
+  especialidades: string[];
+}
+
+export async function fetchDesempenhoComparativo(
+  tentativa: "primeira" | "ultima",
+): Promise<ResultadoComparativo | null> {
+  try {
+    const res = await authFetch(`${BASE_URL}/stats/desempenho-comparativo?tentativa=${tentativa}`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
 // --- 6. INTEGRAÇÃO ANKI ---
 
 export async function syncWithAnki(cards: FlashCard[]) {
