@@ -48,7 +48,8 @@ const StudyHub = () => {
   }, [email, navigate]);
 
   useEffect(() => {
-    if (onboardingFeito === false && !loadingCards && !loadingQuestoes) {
+    const interessesDefinidos = localStorage.getItem("interesses_definidos");
+    if (onboardingFeito === false && !loadingCards && !loadingQuestoes && interessesDefinidos) {
       iniciarTour();
     }
   }, [onboardingFeito, loadingCards, loadingQuestoes]);
