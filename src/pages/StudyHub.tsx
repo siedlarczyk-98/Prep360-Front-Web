@@ -1,14 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Brain, Target, Loader2, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fetchCardsForToday, fetchQuestoes, fetchResumoSemanal } from "@/lib/api";
+import {
+  fetchCardsForToday,
+  fetchQuestoes,
+  fetchResumoSemanal,
+  fetchOnboardingWeb,
+  marcarOnboardingWeb,
+} from "@/lib/api";
+import Shepherd from "shepherd.js";
+import "shepherd.js/dist/css/shepherd.css";
 
 const StudyHub = () => {
   const navigate = useNavigate();
   const email = localStorage.getItem("userEmail") || "";
+  const tourRef = useRef<Shepherd.Tour | null>(null);
 
   const { data: cardsHoje, isLoading: loadingCards } = useQuery({
     queryKey: ["cards-hoje", email],
@@ -28,12 +37,95 @@ const StudyHub = () => {
     enabled: !!email,
   });
 
+  const { data: onboardingFeito } = useQuery({
+    queryKey: ["onboarding-web", email],
+    queryFn: fetchOnboardingWeb,
+    enabled: !!email,
+  });
+
   useEffect(() => {
     if (!email) navigate("/", { replace: true });
   }, [email, navigate]);
 
-  if (!email) return null;
+  useEffect(() => {
+    if (onboardingFeito === false && !loadingCards && !loadingQuestoes) {
+      iniciarTour();
+    }
+  }, [onboardingFeito, loadingCards, loadingQuestoes]);
 
+  const iniciarTour = () => {
+    const tour = new Shepherd.Tour({
+      useModalOverlay: true,
+      defaultStepOptions: {
+        cancelIcon: { enabled: true },
+        scrollTo: { behavior: "smooth", block: "center" },
+        classes: "shepherd-theme-arrows",
+      },
+    });
+
+    tour.addStep({
+      id: "boas-vindas",
+      text: "👋 Bem-vindo ao <strong>Prep360</strong>! Vamos te mostrar como funciona a plataforma em alguns passos rápidos.",
+      buttons: [
+        {
+          text: "Pular",
+          action: () => {
+            tour.cancel();
+            marcarOnboardingWeb();
+          },
+          secondary: true,
+        },
+        { text: "Começar →", action: tour.next },
+      ],
+    });
+
+    tour.addStep({
+      id: "flashcards",
+      text: "🧠 Aqui você acessa a <strong>Revisão Espaçada</strong>. O sistema inteligente sabe exatamente quais cards você precisa revisar hoje.",
+      attachTo: { element: "[data-tour='flashcards']", on: "bottom" },
+      buttons: [
+        { text: "← Voltar", action: tour.back, secondary: true },
+        { text: "Próximo →", action: tour.next },
+      ],
+    });
+
+    tour.addStep({
+      id: "questoes",
+      text: "🎯 Aqui você treina com <strong>questões reais</strong> de provas. Escolha por área, banca ou tema.",
+      attachTo: { element: "[data-tour='questoes']", on: "bottom" },
+      buttons: [
+        { text: "← Voltar", action: tour.back, secondary: true },
+        { text: "Próximo →", action: tour.next },
+      ],
+    });
+
+    tour.addStep({
+      id: "progresso",
+      text: "📊 Acompanhe aqui seu <strong>progresso dos últimos 7 dias</strong> — flashcards feitos e questões respondidas.",
+      attachTo: { element: "[data-tour='progresso']", on: "top" },
+      buttons: [
+        { text: "← Voltar", action: tour.back, secondary: true },
+        { text: "Próximo →", action: tour.next },
+      ],
+    });
+
+    tour.addStep({
+      id: "navegacao",
+      text: "🗺️ Use o menu lateral para navegar entre <strong>Agenda, Métricas e mais</strong>.",
+      buttons: [
+        { text: "← Voltar", action: tour.back, secondary: true },
+        { text: "Concluir ✓", action: tour.next },
+      ],
+    });
+
+    tour.on("cancel", () => marcarOnboardingWeb());
+    tour.on("complete", () => marcarOnboardingWeb());
+
+    tourRef.current = tour;
+    tour.start();
+  };
+
+  if (!email) return null;
 
   const firstName = email.split("@")[0].split(/[._]/)[0];
   const capitalizedName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
@@ -44,7 +136,6 @@ const StudyHub = () => {
 
   return (
     <div className="h-full w-full flex flex-col bg-background bg-circles-pattern overflow-hidden">
-
       <main className="flex-1 flex flex-col items-center justify-center px-4 pb-4 relative z-[1]">
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -52,16 +143,13 @@ const StudyHub = () => {
           transition={{ duration: 0.3 }}
           className="text-center mb-5"
         >
-          <h1 className="text-xl font-bold text-foreground">
-            Olá, {capitalizedName}!
-          </h1>
-          <p className="text-muted-foreground mt-0.5 text-xs font-light">
-            Escolha seu modo de treino para hoje.
-          </p>
+          <h1 className="text-xl font-bold text-foreground">Olá, {capitalizedName}!</h1>
+          <p className="text-muted-foreground mt-0.5 text-xs font-light">Escolha seu modo de treino para hoje.</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
           <motion.div
+            data-tour="flashcards"
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
@@ -88,9 +176,7 @@ const StudyHub = () => {
                 <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
               ) : (
                 <div className="text-center">
-                  <span className="text-3xl font-extrabold text-secondary">
-                    {cardsHoje?.length ?? 0}
-                  </span>
+                  <span className="text-3xl font-extrabold text-secondary">{cardsHoje?.length ?? 0}</span>
                   <p className="text-[10px] text-muted-foreground mt-0.5">cards pendentes</p>
                 </div>
               )}
@@ -109,6 +195,7 @@ const StudyHub = () => {
           </motion.div>
 
           <motion.div
+            data-tour="questoes"
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
@@ -135,9 +222,7 @@ const StudyHub = () => {
                 <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
               ) : (
                 <div className="text-center">
-                  <span className="text-3xl font-extrabold text-accent">
-                    {questoes?.length ?? 0}
-                  </span>
+                  <span className="text-3xl font-extrabold text-accent">{questoes?.length ?? 0}</span>
                   <p className="text-[10px] text-muted-foreground mt-0.5">questões liberadas</p>
                 </div>
               )}
@@ -156,8 +241,8 @@ const StudyHub = () => {
           </motion.div>
         </div>
 
-        {/* Seção: Progresso dos Últimos 7 Dias */}
         <motion.div
+          data-tour="progresso"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
@@ -200,9 +285,7 @@ const StudyHub = () => {
             </div>
           ) : (
             <div className="text-center py-2 rounded-xl border border-dashed border-border bg-card/50">
-              <p className="text-xs text-muted-foreground">
-                🚀 Comece sua meta de hoje!
-              </p>
+              <p className="text-xs text-muted-foreground">🚀 Comece sua meta de hoje!</p>
             </div>
           )}
         </motion.div>
