@@ -12,6 +12,7 @@ import {
   marcarOnboardingWeb,
 } from "@/lib/api";
 import Shepherd from "shepherd.js";
+import "shepherd.js/dist/css/shepherd.css";
 
 const StudyHub = () => {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ const StudyHub = () => {
 
     tour.addStep({
       id: "boas-vindas",
-      text: "Bem-vindo <strong>Trilha ENAMED Paciente 360</strong>! Vamos te mostrar como funciona a plataforma em alguns passos rápidos.",
+      text: "Bem-vindo à <strong>Trilha ENAMED Paciente 360</strong>! Vamos te mostrar como funciona a plataforma em alguns passos rápidos.",
       buttons: [
         {
           text: "Pular",
@@ -79,19 +80,9 @@ const StudyHub = () => {
     });
 
     tour.addStep({
-      id: "como-funciona-flashcard",
-      text: `
-    <div style="text-align: center">
-      <img 
-        src="https://s3-sa-east-1.amazonaws.com/avp-development/cursos/materiais_auxiliares/flashcards21774635691904.png" 
-        alt="Flashcards" 
-        style="width: 100%; border-radius: 10px; margin-bottom: 10px; object-fit: cover;"
-      />
-      <p style="font-size: 12px; color: hsl(215 15% 50%); margin: 0">
-        Os flashcards usam repetição espaçada para fixar o conteúdo na memória de longo prazo.
-      </p>
-    </div>
-  `,
+      id: "flashcards",
+      text: "🧠 Aqui você acessa nossos <strong>Flashcards</strong>. O sistema inteligente sabe exatamente quais cards você precisa revisar hoje.",
+      attachTo: { element: "[data-tour='flashcards']", on: "bottom" },
       buttons: [
         { text: "← Voltar", action: tour.back, secondary: true },
         { text: "Próximo →", action: tour.next },
@@ -99,9 +90,19 @@ const StudyHub = () => {
     });
 
     tour.addStep({
-      id: "flashcards",
-      text: "🧠 Aqui você acessa nossos <strong>Flashcards</strong>. O sistema inteligente sabe exatamente quais cards você precisa revisar hoje.",
-      attachTo: { element: "[data-tour='flashcards']", on: "bottom" },
+      id: "como-funciona-flashcard",
+      text: `
+        <div style="text-align: center">
+          <img 
+            src="https://s3-sa-east-1.amazonaws.com/avp-development/cursos/materiais_auxiliares/flashcards21774635691904.png" 
+            alt="Flashcards" 
+            style="width: 100%; border-radius: 10px; margin-bottom: 10px; object-fit: cover;"
+          />
+          <p style="font-size: 12px; color: hsl(215 15% 50%); margin: 0">
+            Os flashcards usam repetição espaçada para fixar o conteúdo na memória de longo prazo.
+          </p>
+        </div>
+      `,
       buttons: [
         { text: "← Voltar", action: tour.back, secondary: true },
         { text: "Próximo →", action: tour.next },
