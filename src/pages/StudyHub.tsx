@@ -17,7 +17,7 @@ import "shepherd.js/dist/css/shepherd.css";
 const StudyHub = () => {
   const navigate = useNavigate();
   const email = localStorage.getItem("userEmail") || "";
-  const tourRef = useRef<InstanceType<typeof Shepherd.Tour> | null>(null);
+  const tourRef = useRef<Shepherd.Tour | null>(null);
 
   const { data: cardsHoje, isLoading: loadingCards } = useQuery({
     queryKey: ["cards-hoje", email],
@@ -65,7 +65,7 @@ const StudyHub = () => {
 
     tour.addStep({
       id: "boas-vindas",
-      text: "👋 Bem-vindo ao <strong>Prep360</strong>! Vamos te mostrar como funciona a plataforma em alguns passos rápidos.",
+      text: "Bem-vindo <strong>Trilha ENAMED Paciente 360</strong>! Vamos te mostrar como funciona a plataforma em alguns passos rápidos.",
       buttons: [
         {
           text: "Pular",
@@ -81,7 +81,7 @@ const StudyHub = () => {
 
     tour.addStep({
       id: "flashcards",
-      text: "🧠 Aqui você acessa a <strong>Revisão Espaçada</strong>. O sistema inteligente sabe exatamente quais cards você precisa revisar hoje.",
+      text: "🧠 Aqui você acessa nossos <strong>Flashcards</strong>. O sistema inteligente sabe exatamente quais cards você precisa revisar hoje.",
       attachTo: { element: "[data-tour='flashcards']", on: "bottom" },
       buttons: [
         { text: "← Voltar", action: tour.back, secondary: true },
