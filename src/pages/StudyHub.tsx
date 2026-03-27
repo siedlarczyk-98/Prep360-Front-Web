@@ -99,7 +99,7 @@ const StudyHub = () => {
             style="width: 100%; border-radius: 10px; margin-bottom: 10px; object-fit: cover;"
           />
           <p style="font-size: 12px; color: hsl(215 15% 50%); margin: 0">
-            Os flashcards usam repetição espaçada para fixar o conteúdo na memória de longo prazo.
+            Os flashcards usam repetição espaçada para fixar o conteúdo na memória de longo prazo. É importante que você sempre escolha uma dificuldade para cada questão.
           </p>
         </div>
       `,
