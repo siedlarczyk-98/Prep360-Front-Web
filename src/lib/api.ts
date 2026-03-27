@@ -393,9 +393,13 @@ export async function fetchDesempenhoComparativo(
 ): Promise<ResultadoComparativo | null> {
   try {
     const res = await authFetch(`${BASE_URL}/stats/desempenho-comparativo?tentativa=${tentativa}`);
+    console.log("[comparativo] status:", res.status);
     if (!res.ok) return null;
-    return res.json();
-  } catch {
+    const data = await res.json();
+    console.log("[comparativo] data:", data);
+    return data;
+  } catch (err) {
+    console.error("[comparativo] erro:", err);
     return null;
   }
 }
