@@ -372,8 +372,6 @@ const SimuladoFiltros = () => {
     </button>
   );
   })
-                          );
-                        })
                       ) : (
                         <p className="text-[11px] text-muted-foreground py-2">Nenhuma aula encontrada.</p>
                       )}
