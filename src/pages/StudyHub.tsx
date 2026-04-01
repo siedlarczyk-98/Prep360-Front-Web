@@ -6,8 +6,8 @@ import { Brain, Target, Loader2, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   fetchCardsForToday,
-  fetchQuestoes,
   fetchResumoSemanal,
+  fetchResumoHome,
   fetchOnboardingWeb,
   marcarOnboardingWeb,
 } from "@/lib/api";
@@ -25,9 +25,9 @@ const StudyHub = () => {
     enabled: !!email,
   });
 
-  const { data: questoes, isLoading: loadingQuestoes } = useQuery({
-    queryKey: ["questoes", email],
-    queryFn: () => fetchQuestoes({ apenas_liberadas: true }),
+  const { data: resumoHome, isLoading: loadingQuestoes } = useQuery({
+    queryKey: ["resumo-home", email],
+    queryFn: fetchResumoHome,
     enabled: !!email,
   });
 
@@ -243,8 +243,11 @@ const StudyHub = () => {
                 <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
               ) : (
                 <div className="text-center">
-                  <span className="text-3xl font-extrabold text-accent">{questoes?.length ?? 0}</span>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">questões liberadas</p>
+                  <span className="text-3xl font-extrabold text-accent">{resumoHome?.total_questoes ?? 0}</span>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">questões disponíveis</p>
+                  {(resumoHome?.essenciais_pendentes ?? 0) > 0 && (
+                    <p className="text-[10px] text-accent mt-0.5">⭐ {resumoHome!.essenciais_pendentes} essenciais pendentes</p>
+                  )}
                 </div>
               )}
             </div>
