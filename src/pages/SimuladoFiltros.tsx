@@ -334,30 +334,44 @@ const SimuladoFiltros = () => {
                   ) : (
                     <div className="mt-2 max-h-52 overflow-y-auto space-y-1.5 pr-1">
                       {aulasFiltradas.length > 0 ? (
-                        aulasFiltradas.map((d) => {
-                          const hasEss = (d.total_essenciais ?? 0) > 0;
-                          const essResp = d.essenciais_respondidas ?? 0;
-                          const essTotal = d.total_essenciais ?? 0;
-                          const essProg = essTotal > 0 ? Math.round((essResp / essTotal) * 100) : 0;
-                          return (
-                            <button
-                              key={d.aula_id}
-                              onClick={() => handleAulaClick(d)}
-                              className="w-full text-left px-3 py-2.5 rounded-lg text-xs border-2 border-border bg-card text-foreground hover:border-accent/30 transition-all"
-                            >
-                              <span className="font-semibold block">{d.aula_nome}</span>
-                              {hasEss ? (
-                                <div className="mt-1.5">
-                                  <span className="text-[10px] text-muted-foreground">
-                                    ⭐ {essResp}/{essTotal} essenciais {"  "}·{"  "} {d.total_questoes} questões no
-                                    total
-                                  </span>
-                                  <Progress value={essProg} className="h-1 mt-1" />
-                                </div>
-                              ) : (
-                                <span className="text-muted-foreground text-[10px]">{d.total_questoes} questões</span>
-                              )}
-                            </button>
+                         aulasFiltradas.map((d) => {
+                            const hasEss = (d.total_essenciais ?? 0) > 0;
+                            const essResp = d.essenciais_respondidas ?? 0;
+                            const essTotal = d.total_essenciais ?? 0;
+                            const essProg = essTotal > 0 ? Math.round((essResp / essTotal) * 100) : 0;
+                            const essCompleto = hasEss && (d.essenciais_pendentes ?? (essTotal - essResp)) === 0;
+
+  return (
+    <button
+      key={d.aula_id}
+      onClick={() => handleAulaClick(d)}
+      className="w-full text-left px-3.5 py-3 rounded-xl border border-border bg-card text-foreground hover:border-accent/30 hover:shadow-sm transition-all"
+    >
+      <span className="text-xs font-semibold block leading-snug">{d.aula_nome}</span>
+      <div className="flex items-center mt-1.5 gap-1.5">
+        {hasEss ? (
+          <>
+            <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${essCompleto ? 'bg-[#1C3553]' : 'bg-accent'}`} />
+            <span className={`text-[10px] font-semibold ${essCompleto ? 'text-[#1C3553]' : 'text-accent'}`}>
+              {essResp}/{essTotal} essenciais
+            </span>
+            <span className="text-[10px] text-muted-foreground">· {d.total_questoes} questões no total</span>
+          </>
+        ) : (
+          <span className="text-[10px] text-muted-foreground">{d.total_questoes} questões</span>
+        )}
+      </div>
+      {hasEss && (
+        <div className="h-[3px] bg-muted rounded-full mt-2 overflow-hidden">
+          <div
+            className={`h-full rounded-full ${essCompleto ? 'bg-[#1C3553]' : 'bg-accent'}`}
+            style={{ width: `${Math.max(essProg, 3)}%` }}
+          />
+        </div>
+      )}
+    </button>
+  );
+  })
                           );
                         })
                       ) : (
