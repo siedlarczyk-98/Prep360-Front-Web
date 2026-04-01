@@ -101,6 +101,9 @@ export interface Questao {
   ano?: number;
   dificuldade?: string;
   tags?: string;
+  essencial?: boolean;
+  respondida?: boolean;
+  acertou?: boolean | null;
 }
 
 export interface ResultadoResposta {
