@@ -152,18 +152,10 @@ const SimuladoView = () => {
                 ))}
               </div>
               {resultadoAPI && resultadoAPI.feedback_prof && (
-                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg border border-border bg-muted/50 p-3 mb-4">
-                  <div className="flex items-center gap-1.5 mb-1.5">
-                    <MessageSquareText className="w-3.5 h-3.5 text-primary" />
-                    <span className="text-[11px] font-semibold text-foreground">Comentário do Professor</span>
-                    {resultadoAPI.acertou ? (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/20 text-green-700 font-semibold ml-auto">✓ Correto</span>
-                    ) : (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-red-500/20 text-red-700 font-semibold ml-auto">✗ Incorreto</span>
-                    )}
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">{resultadoAPI.feedback_prof}</p>
-                </motion.div>
+                <FeedbackProfCard
+                  resultadoAPI={resultadoAPI}
+                  questaoId={questaoAtual!.id}
+                />
               )}
             </motion.div>
           )}
