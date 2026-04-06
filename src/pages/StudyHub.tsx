@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Brain, Target, Loader2, Flame } from "lucide-react";
@@ -145,8 +145,8 @@ const StudyHub = () => {
       queryClient.setQueryData(["onboarding-web", email], true);
     };
 
-    tour.on("cancel", () => marcarOnboardingWeb());
-    tour.on("complete", () => marcarOnboardingWeb());
+    tour.on("cancel", finalizar);
+    tour.on("complete", finalizar);
 
     tourRef.current = tour;
     tour.start();
