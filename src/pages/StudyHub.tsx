@@ -18,6 +18,7 @@ const StudyHub = () => {
   const navigate = useNavigate();
   const email = localStorage.getItem("userEmail") || "";
   const tourRef = useRef<InstanceType<typeof Shepherd.Tour> | null>(null);
+  const queryClient = useQueryClient();
 
   const { data: cardsHoje, isLoading: loadingCards } = useQuery({
     queryKey: ["cards-hoje", email],
@@ -139,6 +140,11 @@ const StudyHub = () => {
       ],
     });
 
+    const finalizar = () => {
+      marcarOnboardingWeb();
+      queryClient.setQueryData(["onboarding-web", email], true);
+    };
+
     tour.on("cancel", () => marcarOnboardingWeb());
     tour.on("complete", () => marcarOnboardingWeb());
 
@@ -246,7 +252,9 @@ const StudyHub = () => {
                   <span className="text-3xl font-extrabold text-accent">{resumoHome?.total_questoes ?? 0}</span>
                   <p className="text-[10px] text-muted-foreground mt-0.5">questões disponíveis</p>
                   {(resumoHome?.essenciais_pendentes ?? 0) > 0 && (
-                    <p className="text-[10px] text-accent mt-0.5">⭐ {resumoHome!.essenciais_pendentes} essenciais pendentes</p>
+                    <p className="text-[10px] text-accent mt-0.5">
+                      ⭐ {resumoHome!.essenciais_pendentes} essenciais pendentes
+                    </p>
                   )}
                 </div>
               )}
