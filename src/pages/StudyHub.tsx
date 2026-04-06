@@ -21,11 +21,20 @@ const StudyHub = () => {
   const tourRef = useRef<InstanceType<typeof Shepherd.Tour> | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: cardsHoje, isLoading: loadingCards } = useQuery({
+  const { data: cardsHoje, isLoading: loadingReview } = useQuery({
     queryKey: ["cards-hoje", email],
     queryFn: () => fetchCardsForToday(),
     enabled: !!email,
   });
+
+  const { data: cardsNovos, isLoading: loadingNew } = useQuery({
+    queryKey: ["cards-novos", email],
+    queryFn: () => fetchNewCards(),
+    enabled: !!email,
+  });
+
+  const loadingCards = loadingReview || loadingNew;
+  const totalCardsPendentes = (cardsHoje?.length ?? 0) + (cardsNovos?.length ?? 0);
 
   const { data: resumoHome, isLoading: loadingQuestoes } = useQuery({
     queryKey: ["resumo-home", email],
