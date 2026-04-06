@@ -6,6 +6,7 @@ import { Brain, Target, Loader2, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   fetchCardsForToday,
+  fetchNewCards,
   fetchResumoSemanal,
   fetchResumoHome,
   fetchOnboardingWeb,
@@ -20,11 +21,20 @@ const StudyHub = () => {
   const tourRef = useRef<InstanceType<typeof Shepherd.Tour> | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: cardsHoje, isLoading: loadingCards } = useQuery({
+  const { data: cardsHoje, isLoading: loadingReview } = useQuery({
     queryKey: ["cards-hoje", email],
     queryFn: () => fetchCardsForToday(),
     enabled: !!email,
   });
+
+  const { data: cardsNovos, isLoading: loadingNew } = useQuery({
+    queryKey: ["cards-novos", email],
+    queryFn: () => fetchNewCards(),
+    enabled: !!email,
+  });
+
+  const loadingCards = loadingReview || loadingNew;
+  const totalCardsPendentes = (cardsHoje?.length ?? 0) + (cardsNovos?.length ?? 0);
 
   const { data: resumoHome, isLoading: loadingQuestoes } = useQuery({
     queryKey: ["resumo-home", email],
@@ -200,7 +210,7 @@ const StudyHub = () => {
                 <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
               ) : (
                 <div className="text-center">
-                  <span className="text-3xl font-extrabold text-secondary">{cardsHoje?.length ?? 0}</span>
+                  <span className="text-3xl font-extrabold text-secondary">{totalCardsPendentes}</span>
                   <p className="text-[10px] text-muted-foreground mt-0.5">cards pendentes</p>
                 </div>
               )}
