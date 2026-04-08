@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEmbedNavigate } from "@/hooks/useEmbedNavigate";
 import { motion } from "framer-motion";
 import { XCircle, CheckCircle2, ArrowLeft, MessageSquareText, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,7 @@ const safe = (v: number | undefined | null): number => {
 };
 
 const SimuladoCompletion = ({ historico }: SimuladoCompletionProps) => {
-  const navigate = useNavigate();
+  const navigate = useEmbedNavigate();
   const [openItems, setOpenItems] = useState<string[]>([]);
 
   const totalQuestoes = historico.length;
@@ -229,7 +229,7 @@ const SimuladoCompletion = ({ historico }: SimuladoCompletionProps) => {
         <div className="max-w-2xl mx-auto">
           <Button
             size="lg"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/simulado-filtros")}
             className="w-full h-12 text-sm font-semibold gap-2"
           >
             <ArrowLeft className="w-4 h-4" />

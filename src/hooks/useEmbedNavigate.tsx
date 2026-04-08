@@ -6,6 +6,7 @@ const EMBED_ROUTES = new Set([
   "/dashboard",
   "/agenda",
   "/simulado-filtros",
+  "/simulado",
 ]);
 
 // Map normal routes to their embed counterparts
