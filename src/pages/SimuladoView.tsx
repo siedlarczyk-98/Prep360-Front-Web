@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { useEmbedNavigate } from "@/hooks/useEmbedNavigate";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Loader2, CheckCircle2, XCircle, MessageSquareText, ThumbsUp, ThumbsDown } from "lucide-react";
@@ -78,7 +79,7 @@ const FeedbackProfCard = ({ resultadoAPI, questaoId }: { resultadoAPI: Resultado
 };
 
 const SimuladoView = () => {
-  const navigate = useNavigate();
+  const navigate = useEmbedNavigate();
   const [searchParams] = useSearchParams();
   const email = localStorage.getItem("userEmail") || "";
 
@@ -163,7 +164,7 @@ const SimuladoView = () => {
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center bg-background gap-3">
         <p className="text-sm text-muted-foreground">Nenhuma questão disponível no momento.</p>
-        <Button variant="outline" size="sm" onClick={() => navigate("/hub")}>Voltar ao Hub</Button>
+        <Button variant="outline" size="sm" onClick={() => navigate("/simulado-filtros")}>Voltar</Button>
       </div>
     );
   }
@@ -173,7 +174,7 @@ const SimuladoView = () => {
   return (
     <div className="h-screen w-full flex flex-col bg-background overflow-hidden">
       <header className="flex items-center justify-between px-4 py-2 border-b border-border shrink-0">
-        <button onClick={() => navigate("/hub")} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+        <button onClick={() => navigate("/simulado-filtros")} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="w-3.5 h-3.5" />
           Voltar
         </button>

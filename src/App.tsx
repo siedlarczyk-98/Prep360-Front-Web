@@ -17,6 +17,7 @@ import MetricasPage from "./pages/MetricasPage.tsx";
 import EmbedDashboardPage from "./pages/EmbedDashboardPage.tsx";
 import EmbedAgendaPage from "./pages/EmbedAgendaPage.tsx";
 import EmbedSimuladoFiltrosPage from "./pages/EmbedSimuladoFiltrosPage.tsx";
+import EmbedSimuladoPage from "./pages/EmbedSimuladoPage.tsx";
 import AppLayout from "./components/AppLayout.tsx";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/embed/dashboard" element={<EmbedDashboardPage />} />
           <Route path="/embed/agenda" element={<EmbedAgendaPage />} />
           <Route path="/embed/simulado-filtros" element={<EmbedSimuladoFiltrosPage />} />
+          <Route path="/embed/simulado" element={<EmbedSimuladoPage />} />
 
           {/* With Navigation Rail */}
           <Route element={<AppLayout />}>
