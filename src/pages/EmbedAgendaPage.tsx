@@ -1,10 +1,13 @@
 import Agenda from "@/pages/Agenda";
+import { EmbedProvider } from "@/hooks/useEmbedNavigate";
 
 const EmbedAgendaPage = () => {
   return (
-    <div className="h-screen w-full overflow-y-auto bg-transparent">
-      <Agenda />
-    </div>
+    <EmbedProvider>
+      <div className="h-screen w-full overflow-y-auto bg-transparent">
+        <Agenda />
+      </div>
+    </EmbedProvider>
   );
 };
 
