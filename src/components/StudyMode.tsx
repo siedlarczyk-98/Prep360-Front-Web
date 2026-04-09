@@ -30,9 +30,9 @@ function formatNextReview(dateStr: string): string {
   }
 }
 
-function formatTagLabel(tags: string | undefined): string {
-  if (!tags) return "";
-  const parts = tags.split("::");
+function formatTagLabel(tag: string | undefined): string {
+  if (!tag) return "";
+  const parts = tag.split("::");
   return parts[parts.length - 1]?.split(",")[0]?.trim() || "";
 }
 
@@ -63,10 +63,12 @@ const StudyMode = ({ cards: initialCards, email, onClose, isManualMode = false }
       try {
         const result = await registerStudy(card.id, difficulty);
         if (result?.proximaRevisao) {
-          toast.success("Resposta registrada!", { description: `Próxima revisão: ${formatNextReview(result.proximaRevisao)}` });
+          toast.success("Resposta registrada!", {
+            description: `Próxima revisão: ${formatNextReview(result.proximaRevisao)}`,
+          });
         }
       } catch {
-        toast.error("Erro ao registrar resposta", { description: "Tente novamente." });
+        toast.error("Erro ao registrar resposta");
       }
     }
     setStats((s) => ({ ...s, [difficulty]: s[difficulty] + 1 }));
@@ -126,7 +128,10 @@ const StudyMode = ({ cards: initialCards, email, onClose, isManualMode = false }
       {!completed && (
         <div className="px-3 flex-shrink-0">
           <div className="h-0.5 bg-primary-foreground/10 rounded-full overflow-hidden">
-            <motion.div className="h-full bg-accent rounded-full" animate={{ width: `${((currentIndex + 1) / queue.length) * 100}%` }} />
+            <motion.div
+              className="h-full bg-accent rounded-full"
+              animate={{ width: `${((currentIndex + 1) / queue.length) * 100}%` }}
+            />
           </div>
         </div>
       )}
@@ -164,11 +169,13 @@ const StudyMode = ({ cards: initialCards, email, onClose, isManualMode = false }
                     }}
                   >
                     <p className="text-foreground font-semibold text-base leading-relaxed tracking-[-0.01em]">
-                      {card.frente}
+                      {card.front}
                     </p>
                     <div className="flex items-center justify-between mt-3 flex-shrink-0">
-                      {card.tags && (
-                        <Badge variant="secondary" className="text-[10px] font-normal">{formatTagLabel(card.tags)}</Badge>
+                      {card.tag_cont && (
+                        <Badge variant="secondary" className="text-[10px] font-normal">
+                          {formatTagLabel(card.tag_cont)}
+                        </Badge>
                       )}
                       <div className="flex items-center gap-1 text-[10px] text-accent ml-auto">
                         <RotateCcw className="w-2.5 h-2.5" />
@@ -187,14 +194,20 @@ const StudyMode = ({ cards: initialCards, email, onClose, isManualMode = false }
                     }}
                   >
                     <div>
-                      <p className="text-foreground font-semibold text-base leading-relaxed tracking-[-0.01em]">{card.verso}</p>
-                      {card.exemplo && (
-                        <p className="text-muted-foreground text-xs mt-2 italic border-t border-border pt-2">💡 {card.exemplo}</p>
+                      <p className="text-foreground font-semibold text-base leading-relaxed tracking-[-0.01em]">
+                        {card.back}
+                      </p>
+                      {card.example && (
+                        <p className="text-muted-foreground text-xs mt-2 italic border-t border-border pt-2">
+                          💡 {card.example}
+                        </p>
                       )}
                     </div>
                     <div className="flex items-center justify-between mt-2 flex-shrink-0">
-                      {card.tags && (
-                        <Badge variant="secondary" className="text-[10px] font-normal">{formatTagLabel(card.tags)}</Badge>
+                      {card.tag_cont && (
+                        <Badge variant="secondary" className="text-[10px] font-normal">
+                          {formatTagLabel(card.tag_cont)}
+                        </Badge>
                       )}
                       <div className="text-[10px] text-muted-foreground ml-auto">Toque para voltar</div>
                     </div>
@@ -220,7 +233,10 @@ const StudyMode = ({ cards: initialCards, email, onClose, isManualMode = false }
               difficultyConfig.map((d) => (
                 <Button
                   key={d.value}
-                  onClick={(e) => { e.stopPropagation(); handleAnswer(d.value); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAnswer(d.value);
+                  }}
                   disabled={submitting}
                   className={`rounded-full h-8 px-3 font-semibold text-[11px] ${d.color}`}
                 >
