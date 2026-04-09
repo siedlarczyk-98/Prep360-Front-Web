@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import logoIsotipo from "@/assets/logo-isotipo.png";
 
 interface LoginScreenProps {
   onLogin: (email: string) => void;
@@ -19,27 +20,23 @@ const LoginScreen = ({ onLogin, loading, error }: LoginScreenProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background bg-circles-pattern p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-md"
-      >
+        className="w-full max-w-md relative z-[1]">
+        
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Flashcards</h1>
-          <p className="text-muted-foreground mt-2 font-light">
-            Repetição espaçada para memorizar melhor
-          </p>
+          <img src={logoIsotipo} alt="Enamed360" className="h-16 w-auto mx-auto mb-4" />
+          <h1 className="text-3xl font-bold text-foreground">Trilha ENAMED</h1>
+          <p className="text-muted-foreground mt-2 font-light">Onde aprendizado e preparação se encontram</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div
-            className="rounded-xl border border-border bg-card p-6"
-            style={{ boxShadow: "var(--shadow-card)" }}
-          >
+          <div className="rounded-xl border border-border bg-card p-6" style={{ boxShadow: "var(--shadow-card)" }}>
             <label className="text-sm font-medium text-foreground mb-2 block">
-              Seu e-mail
+              Seu e-mail cadastrado no Paciente 360
             </label>
             <Input
               type="email"
@@ -48,8 +45,7 @@ const LoginScreen = ({ onLogin, loading, error }: LoginScreenProps) => {
               onChange={(e) => setEmail(e.target.value)}
               className="h-12 text-base rounded-lg"
               disabled={loading}
-              required
-            />
+              required />
             {error && (
               <p className="text-destructive text-sm mt-2">{error}</p>
             )}
@@ -67,7 +63,7 @@ const LoginScreen = ({ onLogin, loading, error }: LoginScreenProps) => {
               </>
             ) : (
               <>
-                Entrar
+                Acessar conteúdos
                 <ArrowRight className="w-4 h-4" />
               </>
             )}

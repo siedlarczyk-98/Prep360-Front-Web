@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "@/lib/api";
+import { identificarUsuario } from "@/lib/api";
 import LoginScreen from "@/components/LoginScreen";
 
 const Index = () => {
@@ -10,11 +10,13 @@ const Index = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    // Auto-login: token já existe
     const token = localStorage.getItem("userToken");
     if (token) {
-      navigate("/home", { replace: true });
+      navigate("/hub", { replace: true });
       return;
     }
+
     setReady(true);
   }, []);
 
@@ -22,10 +24,10 @@ const Index = () => {
     setLoading(true);
     setError("");
     try {
-      const result = await login(email);
-      localStorage.setItem("userToken", result.token);
-      localStorage.setItem("userEmail", result.email);
-      navigate("/home", { replace: true });
+      const { token } = await identificarUsuario(email);
+      localStorage.setItem("userToken", token);
+      localStorage.setItem("userEmail", email);
+      navigate("/hub", { replace: true });
     } catch {
       setError("Não foi possível autenticar. Verifique seu e-mail.");
       setLoading(false);

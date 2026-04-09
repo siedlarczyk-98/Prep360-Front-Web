@@ -1,9 +1,9 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useEmbedNavigate } from "@/hooks/useEmbedNavigate";
 import Dashboard from "@/components/Dashboard";
 
-const HomePage = () => {
-  const navigate = useNavigate();
+const DashboardPage = () => {
+  const navigate = useEmbedNavigate();
   const email = localStorage.getItem("userEmail") || "";
 
   useEffect(() => {
@@ -11,7 +11,6 @@ const HomePage = () => {
   }, [email, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken");
     localStorage.removeItem("userEmail");
     navigate("/", { replace: true });
   };
@@ -21,4 +20,4 @@ const HomePage = () => {
   return <Dashboard email={email} onLogout={handleLogout} />;
 };
 
-export default HomePage;
+export default DashboardPage;
