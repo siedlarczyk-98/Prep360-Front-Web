@@ -11,7 +11,10 @@ interface DisciplineCardProps {
 }
 
 const DisciplineCard = ({ name, totalCards, studiedCards, onClick, index }: DisciplineCardProps) => {
-  const progress = totalCards > 0 ? Math.round((studiedCards / totalCards) * 100) : 0;
+  const safeStudied = Number.isFinite(studiedCards) ? studiedCards : 0;
+  const safeTotal = Number.isFinite(totalCards) && totalCards > 0 ? totalCards : 0;
+  const rawProgress = safeTotal > 0 ? (safeStudied / safeTotal) * 100 : 0;
+  const progress = Number.isFinite(rawProgress) ? Math.max(0, Math.min(100, Math.round(rawProgress))) : 0;
 
   return (
     <motion.div
