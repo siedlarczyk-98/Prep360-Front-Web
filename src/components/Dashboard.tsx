@@ -149,19 +149,21 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
   }, [allCards]);
 
   const getProgressForDiscipline = (discCards: FlashCard[]) => {
-    if (progressoDisciplinas.length === 0) return 0;
+    if (!progressoDisciplinas || progressoDisciplinas.length === 0) return 0;
     const cardIds = new Set(discCards.map((c) => c.id));
     const matching = progressoDisciplinas.filter((p) => cardIds.has(Number(p.aula_id)));
+    const safePct = (p: any) => (Number.isFinite(Number(p.progresso_percentual)) ? Number(p.progresso_percentual) : 0);
     if (matching.length > 0) {
-      const avg = matching.reduce((sum, p) => sum + p.progresso_percentual, 0) / matching.length;
-      return Math.round(avg);
+      const avg = matching.reduce((sum, p) => sum + safePct(p), 0) / matching.length;
+      return Number.isFinite(avg) ? Math.round(avg) : 0;
     }
-    const total = progressoDisciplinas.reduce((sum, p) => sum + p.progresso_percentual, 0);
-    return Math.round(total / progressoDisciplinas.length);
+    const total = progressoDisciplinas.reduce((sum, p) => sum + safePct(p), 0);
+    const avg = total / progressoDisciplinas.length;
+    return Number.isFinite(avg) ? Math.round(avg) : 0;
   };
 
-  const todayHasCards = todayCards.length > 0;
-  const newHasCards = newCards.length > 0;
+  const todayHasCards = todayCardsFiltered.length > 0;
+  const newHasCards = newCardsFiltered.length > 0;
 
   return (
     <>
