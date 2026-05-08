@@ -62,7 +62,27 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
   });
 
   const isLoading = isLoadingToday || isLoadingNew || isLoadingAll;
-  const displayCards = allCards;
+
+  const filterByAula = useCallback(<T extends { aula_id: string }>(arr: T[]): T[] => {
+    if (selectedAulaManual === "todas") return arr;
+    return arr.filter((c) => String(c.aula_id) === String(selectedAulaManual));
+  }, [selectedAulaManual]);
+
+  const displayCards = useMemo(() => filterByAula(allCards), [allCards, filterByAula]);
+  const todayCardsFiltered = useMemo(() => filterByAula(todayCards), [todayCards, filterByAula]);
+  const newCardsFiltered = useMemo(() => filterByAula(newCards), [newCards, filterByAula]);
+
+  const filteredProgressStats = useMemo(() => {
+    if (!progressStats) return null;
+    if (selectedAulaManual === "todas" || allCards.length === 0) return progressStats;
+    const ratio = displayCards.length / allCards.length;
+    return {
+      ...progressStats,
+      aprendendo: Math.round((progressStats.aprendendo || 0) * ratio),
+      revisando: Math.round((progressStats.revisando || 0) * ratio),
+      memorizados: Math.round((progressStats.memorizados || 0) * ratio),
+    };
+  }, [progressStats, selectedAulaManual, allCards.length, displayCards.length]);
 
   const disciplines = useMemo<Discipline[]>(() => {
     const map = new Map<string, FlashCard[]>();
