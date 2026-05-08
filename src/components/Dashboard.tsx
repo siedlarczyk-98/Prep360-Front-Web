@@ -47,8 +47,8 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
   });
 
   const { data: allCards = [], isLoading: isLoadingAll } = useQuery<FlashCard[]>({
-    queryKey: ["cards", email],
-    queryFn: () => fetchCards()
+    queryKey: ["cards-todos", email],
+    queryFn: () => fetchEstudoManual()
   });
 
   const { data: progressStats } = useQuery({
