@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchCards, fetchCardsForToday, fetchNewCards, fetchProgressStats, FlashCard, syncWithAnki, fetchProgressoDisciplinas } from "@/lib/api";
+import { fetchCardsForToday, fetchNewCards, fetchProgressStats, FlashCard, syncWithAnki, fetchProgressoDisciplinas, fetchEstudoManual } from "@/lib/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Loader2, ArrowLeft, Calendar, Sparkles, Brain, BarChart3, Trophy, Lightbulb, Info, BookOpen } from "lucide-react";
 import { useEmbedNavigate } from "@/hooks/useEmbedNavigate";

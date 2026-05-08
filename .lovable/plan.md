@@ -1,43 +1,32 @@
+## Problema
 
+A tela de disciplinas no Dashboard de flashcards está mostrando apenas 90 cards em Ginecologia/Obstetrícia porque o agrupamento é feito a partir do endpoint `/cards-para-hoje` (fila SRS do dia), e não do universo completo de cards da disciplina.
 
-## Revisão dos Tooltips da Plataforma
+## Solução
 
-### Problemas identificados
+Trocar a fonte de dados do agrupamento por disciplinas/aulas para o endpoint `/estudo-manual`, que retorna todos os cards do aluno (sem filtro SRS de "vence hoje"). Os cards de hoje continuam sendo buscados separadamente para o painel "Revisar hoje" e para iniciar a sessão de estudo SRS.
 
-1. **`TooltipProvider` global sem `delayDuration`** — O provider em `App.tsx` não define delay, usando o padrão de 700ms do Radix, que é lento e causa a impressão de que o tooltip "não funciona".
+### Arquivo: `src/components/Dashboard.tsx`
 
-2. **Tooltips em mobile (touch devices)** — Radix tooltips são ativados por hover. Em dispositivos touch, não há hover, então os tooltips simplesmente não aparecem. A plataforma é claramente mobile-first (tem `safe-area-inset`, `-webkit-tap-highlight-color`, etc.), então os tooltips ficam invisíveis para a maioria dos usuários.
+1. Trocar o `useQuery` de `allCards`:
+   - **Antes:** `queryFn: () => fetchCards()` (chama `/cards-para-hoje`)
+   - **Depois:** `queryFn: () => fetchEstudoManual()` (chama `/estudo-manual`, retorna todos)
+   - Atualizar `queryKey` para `["cards-todos", email]` para não colidir com cache existente.
 
-3. **`TooltipProvider` aninhados com delays diferentes** — `SimuladoFiltros.tsx` usa `delayDuration={200}` e `sidebar.tsx` usa `delayDuration={0}`, criando conflito com o provider global.
+2. Atualizar o import de `@/lib/api` para incluir `fetchEstudoManual`.
 
-4. **Estilo do tooltip genérico** — Usa `bg-popover` (branco sobre branco em cards brancos), pouco contraste visual. Tooltips informativos devem se destacar mais.
+3. O agrupamento de `disciplines` (linhas 67-86) e `aulasUnicas` (linhas 123-129) continua igual — apenas a fonte muda.
 
-### Plano de correção
+4. Manter `todayCards` (`fetchCardsForToday`) e `newCards` (`fetchNewCards`) como estão — eles alimentam os botões "Revisar hoje" e "Cards novos" do topo, que continuam corretos.
 
-**Arquivo: `src/App.tsx`**
-- Definir `delayDuration={300}` no `TooltipProvider` global para resposta mais rápida.
+5. Ao iniciar estudo de uma disciplina/aula a partir da listagem, os cards passados ao `StudyMode` vêm de `allCards` (agora completo). Verificar se isso continua coerente: como `StudyMode` aplica a lógica SRS local, passar todos os cards da disciplina é o comportamento esperado de "estudar tudo dessa matéria".
 
-**Arquivo: `src/components/ui/tooltip.tsx`**
-- Trocar estilo de `bg-popover text-popover-foreground border` para `bg-primary text-primary-foreground` (fundo escuro navy, texto branco) — padrão mais visível e profissional.
-- Adicionar `Portal` do Radix para evitar problemas de overflow/clipping.
-- Aumentar `sideOffset` para 6px.
+## Detalhes técnicos
 
-**Arquivo: `src/pages/SimuladoFiltros.tsx`**
-- Remover o `TooltipProvider` local redundante (o global já cobre).
+- `fetchEstudoManual()` sem `aulaId` já retorna todos os cards do aluno via `/estudo-manual`.
+- Não há mudança de backend nem de RLS.
+- Não toca em outros componentes (StudyHub, Métricas, Agenda) — eles já usam endpoints próprios.
 
-### Detalhes técnicos
+## Validação
 
-O componente `TooltipContent` será atualizado para:
-```
-bg-primary text-primary-foreground border-0 shadow-lg px-3 py-1.5 text-xs rounded-lg
-```
-
-Isso dá um tooltip escuro (navy) com texto branco, que se destaca sobre qualquer fundo — cards brancos, backgrounds cinzas, etc.
-
-O `Radix.Portal` garante que o tooltip nunca fique cortado por `overflow: hidden` de containers pai.
-
-### Arquivos alterados
-- `src/components/ui/tooltip.tsx` — estilo + Portal
-- `src/App.tsx` — `delayDuration={300}`
-- `src/pages/SimuladoFiltros.tsx` — remover `TooltipProvider` local
-
+Após o ajuste, abrir a tela de flashcards e conferir que o contador de Ginecologia e Obstetrícia bate com o total real (e não apenas 90).
