@@ -153,7 +153,7 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
           queryClient.invalidateQueries({ queryKey: ["cards-new", email] });
           queryClient.invalidateQueries({ queryKey: ["progress-stats", email] });
           queryClient.invalidateQueries({ queryKey: ["progresso-disciplinas", email] });
-          queryClient.invalidateQueries({ queryKey: ["cards", email] });
+          queryClient.invalidateQueries({ queryKey: ["cards-todos", email] });
         }} />
         }
       </AnimatePresence>
