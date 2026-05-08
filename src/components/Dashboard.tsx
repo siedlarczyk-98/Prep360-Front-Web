@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchCards, fetchCardsForToday, fetchNewCards, fetchProgressStats, FlashCard, syncWithAnki, fetchProgressoDisciplinas } from "@/lib/api";
+import { fetchCardsForToday, fetchNewCards, fetchProgressStats, FlashCard, syncWithAnki, fetchProgressoDisciplinas, fetchEstudoManual } from "@/lib/api";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Loader2, ArrowLeft, Calendar, Sparkles, Brain, BarChart3, Trophy, Lightbulb, Info, BookOpen } from "lucide-react";
 import { useEmbedNavigate } from "@/hooks/useEmbedNavigate";
@@ -47,8 +47,8 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
   });
 
   const { data: allCards = [], isLoading: isLoadingAll } = useQuery<FlashCard[]>({
-    queryKey: ["cards", email],
-    queryFn: () => fetchCards()
+    queryKey: ["cards-todos", email],
+    queryFn: () => fetchEstudoManual()
   });
 
   const { data: progressStats } = useQuery({
@@ -153,7 +153,7 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
           queryClient.invalidateQueries({ queryKey: ["cards-new", email] });
           queryClient.invalidateQueries({ queryKey: ["progress-stats", email] });
           queryClient.invalidateQueries({ queryKey: ["progresso-disciplinas", email] });
-          queryClient.invalidateQueries({ queryKey: ["cards", email] });
+          queryClient.invalidateQueries({ queryKey: ["cards-todos", email] });
         }} />
         }
       </AnimatePresence>
