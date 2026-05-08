@@ -192,19 +192,43 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
             </div> :
           !selectedDiscipline ?
           <>
+              {/* Top filter: Filtrar por Aula */}
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-xl bg-card border border-border p-2.5 flex items-center gap-2"
+                style={{ boxShadow: "var(--shadow-card)" }}
+              >
+                <BookOpen className="w-3.5 h-3.5 text-accent shrink-0" />
+                <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider shrink-0">
+                  Filtrar por Aula
+                </label>
+                <Select value={selectedAulaManual} onValueChange={(v) => setSelectedAulaManual(v)}>
+                  <SelectTrigger className="flex-1 h-8 rounded-lg bg-background border-border text-xs">
+                    <SelectValue placeholder="Todas as Aulas Liberadas" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todas">Todas as Aulas Liberadas</SelectItem>
+                    {aulasUnicas.map(([id, nome]) => (
+                      <SelectItem key={id} value={id}>{nome}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </motion.div>
+
               {/* Main action panels */}
               <div className="grid grid-cols-2 gap-2.5">
                 <motion.button
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                onClick={() => todayHasCards && handleStudy(todayCards)}
+                onClick={() => todayHasCards && handleStudy(todayCardsFiltered)}
                 disabled={!todayHasCards}
                 className={`rounded-xl bg-primary p-4 text-left transition-all ${
                 todayHasCards ? "hover:scale-[1.02] active:scale-[0.98] cursor-pointer" : "opacity-60 cursor-not-allowed"}`
                 }
                 style={{ boxShadow: "var(--shadow-elevated)" }}>
                   <Calendar className="w-4 h-4 text-accent mb-1.5" />
-                  <p className="text-2xl font-bold text-primary-foreground">{todayCards.length}</p>
+                  <p className="text-2xl font-bold text-primary-foreground">{todayCardsFiltered.length}</p>
                   <p className="text-[10px] text-primary-foreground/60 mt-0.5">Cards para Hoje</p>
                   {!todayHasCards &&
                 <p className="text-[9px] text-primary-foreground/40 mt-0.5">Revisões concluídas! 🎉</p>
@@ -215,14 +239,14 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 }}
-                onClick={() => newHasCards && handleStudy(newCards)}
+                onClick={() => newHasCards && handleStudy(newCardsFiltered)}
                 disabled={!newHasCards}
                 className={`rounded-xl bg-card border border-border p-4 text-left transition-all ${
                 newHasCards ? "hover:scale-[1.02] active:scale-[0.98] cursor-pointer" : "opacity-60 cursor-not-allowed"}`
                 }
                 style={{ boxShadow: "var(--shadow-elevated)" }}>
                   <Sparkles className="w-4 h-4 text-accent mb-1.5" />
-                  <p className="text-2xl font-bold text-foreground">{newCards.length}</p>
+                  <p className="text-2xl font-bold text-foreground">{newCardsFiltered.length}</p>
                   <p className="text-[10px] text-muted-foreground mt-0.5">Novos Disponíveis</p>
                   {!newHasCards &&
                 <p className="text-[9px] text-muted-foreground/60 mt-0.5">Nenhum card novo</p>
@@ -242,7 +266,7 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
             }
 
               {/* Performance Section */}
-              {progressStats &&
+              {filteredProgressStats &&
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -257,7 +281,7 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
                           <div className="w-8 h-8 rounded-full bg-[hsl(var(--warning)/0.1)] flex items-center justify-center mx-auto mb-1">
                             <Brain className="w-4 h-4 text-[hsl(var(--warning))]" />
                           </div>
-                          <p className="text-lg font-bold text-foreground">{progressStats.aprendendo}</p>
+                          <p className="text-lg font-bold text-foreground">{filteredProgressStats.aprendendo}</p>
                           <p className="text-[9px] text-muted-foreground font-medium">Aprendendo</p>
                         </div>
                       </TooltipTrigger>
@@ -272,7 +296,7 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
                           <div className="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-1">
                             <BarChart3 className="w-4 h-4 text-secondary" />
                           </div>
-                          <p className="text-lg font-bold text-foreground">{progressStats.revisando}</p>
+                          <p className="text-lg font-bold text-foreground">{filteredProgressStats.revisando}</p>
                           <p className="text-[9px] text-muted-foreground font-medium">Revisando</p>
                         </div>
                       </TooltipTrigger>
@@ -287,7 +311,7 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
                           <div className="w-8 h-8 rounded-full bg-[hsl(var(--success)/0.1)] flex items-center justify-center mx-auto mb-1">
                             <Trophy className="w-4 h-4 text-[hsl(var(--success))]" />
                           </div>
-                          <p className="text-lg font-bold text-foreground">{progressStats.memorizados}</p>
+                          <p className="text-lg font-bold text-foreground">{filteredProgressStats.memorizados}</p>
                           <p className="text-[9px] text-muted-foreground font-medium">Memorizados</p>
                         </div>
                       </TooltipTrigger>
@@ -309,29 +333,16 @@ const Dashboard = ({ email, onLogout }: DashboardProps) => {
                   <BookOpen className="w-3.5 h-3.5" />
                   Estudo Manual
                 </h3>
-                <div className="flex items-center gap-2">
-                  <Select value={selectedAulaManual} onValueChange={(v) => setSelectedAulaManual(v)}>
-                    <SelectTrigger className="flex-1 h-8 rounded-lg bg-card border-border text-xs">
-                      <SelectValue placeholder="Filtrar por Aula" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="todas">Todas as Aulas</SelectItem>
-                      {aulasUnicas.map(([id, nome]) => (
-                        <SelectItem key={id} value={id}>{nome}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Button
-                    onClick={() => {
-                      const aulaParam = selectedAulaManual === "todas" ? undefined : selectedAulaManual;
-                      navigate("/dashboard/estudo-manual", { state: { aulaId: aulaParam } });
-                    }}
-                    className="h-8 px-4 text-xs font-semibold gap-1.5 bg-accent text-accent-foreground hover:bg-accent/85 rounded-lg shrink-0"
-                  >
-                    <Play className="w-3.5 h-3.5" />
-                    Iniciar Revisão
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => {
+                    const aulaParam = selectedAulaManual === "todas" ? undefined : selectedAulaManual;
+                    navigate("/dashboard/estudo-manual", { state: { aulaId: aulaParam } });
+                  }}
+                  className="w-full h-9 text-xs font-semibold gap-1.5 bg-accent text-accent-foreground hover:bg-accent/85 rounded-lg"
+                >
+                  <Play className="w-3.5 h-3.5" />
+                  Iniciar Revisão {selectedAulaManual !== "todas" ? "da Aula Selecionada" : "(Todas as Aulas)"}
+                </Button>
               </motion.div>
 
               {/* Disciplines grid */}
